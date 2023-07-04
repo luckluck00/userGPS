@@ -51,24 +51,30 @@ const users = sequelize.define('users', {
 });
 
 // 定義 Friends 模型
-const Friends = sequelize.define('Friends', {
-  participants: Sequelize.INTEGER,
-  // 定義 participants 欄位，類型為整數型別的陣列
-  requestTo: Sequelize.INTEGER,
-  // 定義 requestTo 欄位，類型為整數
+const FriendsReq = sequelize.define('FriendsReq', {
+  participants: Sequelize.INTEGER, // 關聯到user表的id
+  requestTo: Sequelize.STRING, // 對email發送請求
   accepted: {
     type: Sequelize.BOOLEAN,
-    defaultValue: false,
-    // 定義 accepted 欄位，類型為布林型別，默認值為 false
-  },
+    defaultValue: false // 預設為false
+  }
+});
+
+const Friends = sequelize.define('Friends', {
+  userId: Sequelize.INTEGER, // 關聯到user表中的id
+  friends: Sequelize.STRING, // 儲存通過好友請求的email
 });
 
 // 建立 Friends 模型與 User 模型之間的關聯
-Friends.belongsTo(users, { foreignKey: 'requestTo', as: 'requestedUser' });
-Friends.belongsTo(users, { foreignKey: 'participants', as: 'participantUser' });
+FriendsReq.belongsTo(users, { foreignKey: 'requestTo', targetKey: 'email', as: 'requestedUser' });
+FriendsReq.belongsTo(users, { foreignKey: 'participants', targetKey: 'id', as: 'participantUser' });
+Friends.belongsTo(users, {foreignKey: 'userId', targetKey: 'id', as: 'userIdUser'});
+Friends.belongsTo(users, {foreignKey: 'friends', targetKey: 'email', as: 'friendsUser'});
+
 
 // 同步資料庫，創建或更新表格
+FriendsReq.sync({ force: false });
 Friends.sync({ force: false });
 
 // 導出 Friends 模型
-module.exports = Friends;
+module.exports = {users,FriendsReq, Friends};

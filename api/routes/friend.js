@@ -3,6 +3,11 @@ const FriendController = require('../controllers/friend');
 const checkAuth = require('../middleware/check-auth');
 const router = Router();
 
-router.get('/sendFriendRequest', FriendController.sendFriendReuqest);
+router.post('/sendFriendRequest', FriendController.sendFriendReuqest);
+router.get('/getFriendsReq', FriendController.getFriendsReq);
+router.post('/checkReq' , FriendController.checkReq);
+router.post('/denyReq' , FriendController.denyReq);
+router.get('/getFriend' , FriendController.getFriend);
+
 
 module.exports = router;
