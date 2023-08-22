@@ -15,7 +15,7 @@ mongoose.connect(
     'mongodb+srv://luck04280428:' +
     process.env.MONGO_ATLAS_PW +
     '@cluster0.qsqqyxp.mongodb.net/?retryWrites=true&w=majority'
-
+    
 );
 app.use(fileUpload());
 

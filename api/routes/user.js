@@ -13,7 +13,7 @@ router.delete('/:id', checkAuth ,UsersController.User_Delete);
 router.get('/getUserName' , UsersController.User_getUserName);
 router.put('/changeUserName' , UsersController.User_ChangeUserName);
 router.put('/changeUserImg' , UsersController.User_ChangeUserImg);
-router.get('/getNameFromEmail', UsersController.getNameFromEmail);
-router.get('/getUserimgFromEmail', UsersController.getUserimgFromEmail);
+router.post('/getNameFromEmail', UsersController.getNameFromEmail);
+router.post('/getUserimgFromEmail', UsersController.getUserimgFromEmail);
 
 module.exports = router;
