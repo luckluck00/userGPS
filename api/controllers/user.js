@@ -105,7 +105,7 @@ const User_login = (req, res, next) => {
       const userId = results1.rows[0].id;
       const hashedPassword = results.rows[0].password;
       //const userEmail = results.rows[0].email; // 从查询结果中获取用户id
-      const token = jwt.sign({ id: userId}, process.env.JWT_KEY);
+      const token = jwt.sign({ id: userId, email: email}, process.env.JWT_KEY);
 
     bcrypt.compare(req.body.password, hashedPassword, (err, result) => {
       if (err) {

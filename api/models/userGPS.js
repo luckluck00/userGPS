@@ -10,6 +10,10 @@ const userGPSSchema = new mongoose.Schema({
         type: Number,
     },
 
+    email: {
+        type:String,
+    },
+
     createdAt: {
         type: Date,
         immutable: true,

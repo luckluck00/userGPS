@@ -155,11 +155,14 @@ try {
       userId: tokenUserId,
       friends: friendEmail, 
     });
-
+    const createFriends2 = await Friends.create({
+      userId: friendId,
+      friends: userEmail, 
+    });
     res.status(200).json({
       message: 'Friend create successfully',
     })
-    console.log(createFriends, updateFriendsReq);
+    console.log(createFriends, createFriends2,updateFriendsReq);
 
 
 
