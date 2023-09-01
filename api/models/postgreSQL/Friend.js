@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
 const sequelize = new Sequelize('postgres', 'postgres', "ray58111", {
-  host: 'localhost',
+  host: '127.0.0.1',
   dialect: 'postgres',
 });
 
