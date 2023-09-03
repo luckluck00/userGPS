@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
 
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
-const sequelize = new Sequelize('postgres', 'postgres', "ray58111", {
+const sequelize = new Sequelize('postgres', 'postgres', `${process.env.PG_PW}`, {
   host: '127.0.0.1',
   dialect: 'postgres',
+  port: 5432,
 });
 
 // 定義 User 模型
