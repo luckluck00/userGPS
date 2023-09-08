@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 const queries = require('../queries/queries');
-const bcrypt = require('bcrypt');
 const WebCrypto = require('../help/WebCrypto');
 const jwt = require('jsonwebtoken');
 const sharp = require('sharp')
