@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const queries = require('../queries/queries');
 const bcrypt = require('bcrypt');
+const WebCrypto = require('../help/WebCrypto');
 const jwt = require('jsonwebtoken');
 const sharp = require('sharp')
 const { error } = require('console');
@@ -31,13 +32,13 @@ const User_signup = async (req, res, next) => {
         res.status(404).send("Email already exists.")
       }else{
         //add student to db
-        bcrypt.hash(password, 10, (err, hash) => {
+        //bcrypt.hash(password, 10, (err, hash) => {
           if (err) {
             console.log(err);
             res.status(500).send('伺服器錯誤');
           } else {
             //add student to db
-            pool.query(queries.CreatUser, [email, phonenumber, hash, dob], async (error, results) => {
+            pool.query(queries.CreatUser, [email, phonenumber, password, dob], async (error, results) => {
               try {
                 console.log(results);
                 const userId = results.rows[0].id;
@@ -52,7 +53,7 @@ const User_signup = async (req, res, next) => {
               }
             });
           }
-        });
+        //});
       }
     });
 };
@@ -107,7 +108,7 @@ const User_login = (req, res, next) => {
       //const userEmail = results.rows[0].email; // 从查询结果中获取用户id
       const token = jwt.sign({ id: userId, email: email}, process.env.JWT_KEY);
 
-    bcrypt.compare(req.body.password, hashedPassword, (err, result) => {
+    /*bcrypt.compare(req.body.password, hashedPassword, (err, result) => {
       if (err) {
         console.log(err);
         return res.status(401).json({
@@ -126,7 +127,7 @@ const User_login = (req, res, next) => {
           message: "Authentication failed"
         });
       }
-    });
+    });*/
     });
   });
 };
