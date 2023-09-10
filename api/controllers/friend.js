@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const { users, FriendsReq,Friends } = require('../models/postgreSQL/Friend'); 
 const path = require('path');
 const fs = require('fs');
-const sharp = require('sharp')
 
 
 const sendFriendReuqest = async (req, res) => {

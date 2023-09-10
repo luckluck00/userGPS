@@ -6,7 +6,6 @@ const queries = require('../queries/queries');
 const WebCrypto = require('../help/WebCrypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const sharp = require('sharp')
 const { error } = require('console');
 const UserGPS = require('../models/userGPS');
 
@@ -294,11 +293,11 @@ const User_ChangeUserImg = async  (req , res , next) => {
     const timestamp = Date.now();
     const ext = path.extname(req.files.user_img.name);
     const filename = `${timestamp}${ext}`;
-    const imageBuffer = await sharp(image)
+    /*const imageBuffer = await sharp(image)
     .resize({ width: 150, height: 150, fit: 'inside' })
-    .toBuffer();
+    .toBuffer();*/
     const imagePath = path.join(__dirname, 'uploads', filename);
-    fs.writeFileSync(imagePath, imageBuffer);
+    //fs.writeFileSync(imagePath, imageBuffer);
     const imgPath = `uploads/${filename}`;
   // 寫入縮小且裁剪成圓形的圖片檔案
   // 寫入縮小且裁剪成圓形的圖片檔案
