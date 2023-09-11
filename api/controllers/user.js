@@ -37,7 +37,7 @@ const User_signup = async (req, res, next) => {
             res.status(500).send('伺服器錯誤');
           } else {
             //add student to db
-            pool.query(queries.CreatUser, [email, phonenumber, password, dob], async (error, results) => {
+            pool.query(queries.CreatUser, [email, phonenumber, hash, dob], async (error, results) => {
               try {
                 console.log(results);
                 const userId = results.rows[0].id;
@@ -69,7 +69,7 @@ const User_signup_nameAndPhoto = async (req , res , next) => {
 
   // 寫入縮小且裁剪成圓形的圖片檔案
   const imagePath = path.join(__dirname, 'uploads', filename);
-  //fs.writeFileSync(imagePath, imageBuffer);
+  fs.writeFileSync(imagePath, image);
   const imgPath = `uploads/${filename}`;
 
   pool.query(queries.CreateUser_name_photo, [name, imgPath, image],(error, results) => {
