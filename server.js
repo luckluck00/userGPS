@@ -7,7 +7,7 @@ const {Message} = require('./api/socket/Chat/chatSocket');
 const server = http.createServer(app, () => {});
 const socketServer = io(server);
 
-socketServer.on('connection', (socket) => {
+socketServer.on('connectio', (socket) => {
   console.log('Socket connected:', socket.id);
   getUserGPS(io)(socket); // 呼叫 getUserGPS 函式並將 socket 和 io 作為參數傳遞
   Message(io)(socket);
