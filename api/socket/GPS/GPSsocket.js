@@ -7,7 +7,7 @@ const getUserGPS = (io) => (socket) => {
   const gpsSocketHandler = new GPSSocketHander();
   socket.on('login', (token) => {
     const userEmail = gpsSocketHandler.connect(token);
-    console.log(userEmail); 
+    //console.log(userEmail); 
     socket.userEmail = userEmail;
     socket.join(userEmail);
     socket.emit('loggedIn', userEmail);

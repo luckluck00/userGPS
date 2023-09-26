@@ -2,15 +2,17 @@ const http = require('http');
 const app = require('./app');
 const io = require('socket.io');
 const { getUserGPS } = require("./api/socket/GPS/GPSsocket");
-const {Message} = require('./api/socket/Chat/chatSocket');
+const { Message } = require('./api/socket/Chat/chatSocket');
+const { Drive } = require('./api/socket/Drive/driveSocket');
 
 const server = http.createServer(app, () => {});
 const socketServer = io(server);
 
-socketServer.on('connectio', (socket) => {
+socketServer.on('connection', (socket) => {
   console.log('Socket connected:', socket.id);
   getUserGPS(io)(socket); // 呼叫 getUserGPS 函式並將 socket 和 io 作為參數傳遞
   Message(io)(socket);
+  Drive(io)(socket);
 });
 
 const port = process.env.PORT || 3000;

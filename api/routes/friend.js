@@ -8,6 +8,7 @@ router.get('/getFriendsReq', FriendController.getFriendsReq);
 router.post('/checkReq' , FriendController.checkReq);
 router.post('/denyReq' , FriendController.denyReq);
 router.get('/getFriend' , FriendController.getFriend);
+router.get('/getFriendAndMsg' , FriendController.getFriendAndMsg);
 
 
 module.exports = router;

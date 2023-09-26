@@ -1,4 +1,5 @@
 const express = require('express');
+const Message = require('../models/Messages');
 const jwt = require('jsonwebtoken');
 const { users, FriendsReq,Friends } = require('../models/postgreSQL/Friend'); 
 const path = require('path');
@@ -223,6 +224,75 @@ const getFriend = async (req , res) => {
     const userId = decoded.id;
     const user = await users.findOne({ where: { id:userId } });
     const userEmail = user.email;
+    
+    //取得朋友資訊
+    const userFriend = await Friends.findAll({
+       where: { userId:userId},
+       include: {
+        model: users,
+        as: 'friendsUser',
+        attributes: ['img_path', 'name', 'email']
+       }
+      
+      });
+
+      //const participants = userFriend.map(friend => friend.participantUser);
+      //關聯至User
+      const filePromises = userFriend.map(async (friend) => {
+        const imgPath = friend.friendsUser.img_path;
+        const filePath = path.join(__dirname, imgPath);
+        const fileContent = await fs.promises.readFile(filePath);
+        return {
+          //imgPath,
+          fileContent
+        };
+      });
+      //取得姓名
+      const userNamePromises = userFriend.map(async (friend) => {
+        const username = friend.friendsUser.name;
+        return {
+          username
+        };
+      });
+
+      //取得好友Email
+      const friendEmailPromises = userFriend.map(async (friend) => {
+        const friendemail = friend.friendsUser.email;
+        return {
+          friendemail
+        };
+      });
+      
+
+      //將照片、姓名、好友Email回傳
+      const [userImage, userName, friendEmail] = await Promise.all([Promise.all(filePromises), Promise.all(userNamePromises), Promise.all(friendEmailPromises)]);
+  
+      res.status(200).json({
+        message: 'Friend sent successfully',
+        userName,
+        userImage,
+        friendEmail,
+      });
+
+  } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: { message: 'Server error' } });
+  }
+}
+
+const getFriendAndMsg = async (req , res) => {
+  try {
+    const authHeader = req.headers.authorization;
+        if (!authHeader) {
+          return res.status(401).json({ error: { message: 'Authorization header missing' } });
+        }
+    const token = authHeader.split(' ')[1]; // 取得 Bearer token  
+    // 将 token 解析成 payload
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    // 取得 payload 中的 id
+    const userId = decoded.id;
+    const user = await users.findOne({ where: { id:userId } });
+    const userEmail = user.email;
 
     const userFriend = await Friends.findAll({
        where: { userId:userId},
@@ -235,7 +305,7 @@ const getFriend = async (req , res) => {
       });
 
       //const participants = userFriend.map(friend => friend.participantUser);
-
+      //
       const filePromises = userFriend.map(async (friend) => {
         const imgPath = friend.friendsUser.img_path;
         const filePath = path.join(__dirname, imgPath);
@@ -259,23 +329,52 @@ const getFriend = async (req , res) => {
           friendemail
         };
       });
-  
       const [userImage, userName, friendEmail] = await Promise.all([Promise.all(filePromises), Promise.all(userNamePromises), Promise.all(friendEmailPromises)]);
-  
+      const messagesArray = [];
+      const timeArray = [];
+
+      for (const recipientEmail of friendEmail) {
+        console.log(recipientEmail.friendemail)
+
+        const messages = await Message.find({
+          $or: [
+            { $and: [{ email: userEmail }, { friendEmail: recipientEmail.friendemail }] },
+            { $and: [{ email: recipientEmail.friendemail }, { friendEmail: userEmail }] }
+          ]
+        })
+        .select('msg time')
+        .sort({ time: -1 }) // 以时间降序排序，以获取最后一条消息
+        .limit(1)
+
+      
+        if (messages.length > 0) {
+          const message = messages[0]; // 获取数组中的第一个消息对象
+          const formattedMessage = {
+            msg: message.msg,
+            time: message.time,
+          };
+            messagesArray.push(formattedMessage.msg);
+            timeArray.push(formattedMessage.time);
+        }else {
+          messagesArray.push('');
+          timeArray.push(0);
+        }
+      }
+      //訊息處理
+      console.log(userName, friendEmail,messagesArray , timeArray)
       res.status(200).json({
         message: 'Friend sent successfully',
         userName,
         userImage,
         friendEmail,
+        messagesArray,
+        timeArray,
       });
-
   } catch (error) {
         console.error(error);
         res.status(500).json({ error: { message: 'Server error' } });
   }
 }
-
-
 module.exports = {
-    sendFriendReuqest,getFriendsReq,checkReq, denyReq, getFriend
+    sendFriendReuqest,getFriendsReq,checkReq, denyReq, getFriend, getFriendAndMsg
 }
