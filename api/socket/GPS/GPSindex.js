@@ -29,19 +29,24 @@ class GPSSocketHander{
          });
          const friendEmails = friendEmail.map(friend => friend.friends);
         console.log(userEmail);
+        if(data.latitude != null && data.longitude != null){
           const userGPS1 = new userGPS({
-              latitude: data.latitude,
-              longitude: data.longitude,
-              email:userEmail,
-            });
+            latitude: data.latitude,
+            longitude: data.longitude,
+            email:userEmail,
+          });
           const saveUserGPS = await userGPS1.save();
 
           const formattedUserGPS = {
             latitude: saveUserGPS.latitude,
             longitude: saveUserGPS.longitude,
-        };
-
-        return { data: formattedUserGPS ,friendEmail: friendEmails};
+          };
+          
+          return { data: formattedUserGPS ,friendEmail: friendEmails};
+        }else{
+          return {friendEmail: friendEmails};
+        }
+         
       }
       catch(err){
         console.error(err);
