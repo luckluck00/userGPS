@@ -12,7 +12,7 @@ require('dotenv').config()
 
 
 mongoose.connect(
-    `mongodb://0.0.0.0:27017/mongotest`
+    `mongodb://192.168.31.119:27017/mongotest`
 );
 app.use(fileUpload());
 
