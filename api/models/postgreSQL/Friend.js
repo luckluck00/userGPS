@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
 const sequelize = new Sequelize('postgres', 'postgres', `${process.env.PG_PW}`, {
-  host: '192.168.31.119',
+  host: '172.29.224.1',
   dialect: 'postgres',
   port: 5432,
 });
@@ -26,11 +26,13 @@ const users = sequelize.define('users', {
   email: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true ,
     // 定義 email 欄位，類型為字串，且不允許為空
   },
   phonenumber: {
     type: Sequelize.INTEGER,
     allowNull: false,
+    unique: true ,
     // 定義 phonenumber 欄位，類型為整數，且不允許為空
   },
   password: {
@@ -46,6 +48,10 @@ const users = sequelize.define('users', {
     type: Sequelize.STRING,
     // 定義 img_path 欄位，類型為字串
   },
+  driveState: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  }
 }, {
   tableName: 'users', // 指定資料庫表格名稱為 'users'
   timestamps: false, // 如果 users 表格沒有包含 createdAt 和 updatedAt 欄位，設為 false

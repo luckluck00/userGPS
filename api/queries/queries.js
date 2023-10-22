@@ -14,7 +14,9 @@ const getNameFromEmail = "SELECT name FROM users WHERE email = $1";
 const getUserimgFromEmail = "SELECT img_path FROM users WHERE email = $1";
 const ChangeUserName = "UPDATE users SET name = $1 WHERE id = $2;";
 const ChangeUserImg = "UPDATE users SET img_path = $1, user_img = $2 WHERE id = $3";
+const getDriverState = "SELECT driverState FROM users WHERE id = $1";
+
 module.exports = {
     getUsers,getUser, CreatUser, checkEmailExists, User_login, checkHashPassword, DeleteUser, GetlastUserId, CreateUser_name_photo, getUserImg, getUserIdFromEmail, getUserName , ChangeUserName,
-    ChangeUserImg, getNameFromEmail, getUserimgFromEmail
+    ChangeUserImg, getNameFromEmail, getUserimgFromEmail,getDriverState
 }

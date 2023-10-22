@@ -15,5 +15,7 @@ router.put('/changeUserName' , UsersController.User_ChangeUserName);
 router.put('/changeUserImg' , UsersController.User_ChangeUserImg);
 router.post('/getNameFromEmail', UsersController.getNameFromEmail);
 router.post('/getUserimgFromEmail', UsersController.getUserimgFromEmail);
+router.get('/getDriverState', UsersController.User_getDriverState);
+
 
 module.exports = router;

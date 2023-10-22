@@ -41,7 +41,7 @@ const User_signup = async (req, res, next) => {
               try {
                 console.log(results);
                 const userId = results.rows[0].id;
-                const token = jwt.sign({id: userId}, process.env.JWT_KEY);
+                const token = jwt.sign({id: userId, email: email}, process.env.JWT_KEY);
                   const userGPS = new UserGPS({latitude: 0, longitude: 0,userId: userId});
                   const doc = await userGPS.save();
                   console.log(doc);
@@ -390,6 +390,46 @@ const getUserimgFromEmail = async  (req , res , next) => {
   }
 };
 
+const User_getDriverState = async  (req , res , next) => {
+
+  // 获取 Authorization Header 中的 Bearer Token
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: { message: 'Authorization header missing' } });
+  }
+  const token = authHeader.split(' ')[1]; // 取得 Bearer token  
+  try {
+    // 将 token 解析成 payload
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    // 取得 payload 中的 id
+    const userId = decoded.id;
+    // 查询用户头像的文件路径
+
+    pool.query(queries.getDriverState, [userId] , (error , results) => {
+      if (error) {
+        return res.status(404).json({ error: { message: 'User not found' } });
+      }
+      else{
+        const driverState = results.rows[0].driverState;
+        res.status(200).json({
+          driverState
+        });
+      }
+    });
+
+  } catch (err) {
+    if (err.driverState === 'TokenExpiredError') {
+      return res.status(401).json({ error: { message: 'Token expired' } });
+    }
+    if (err.driverState === 'JsonWebTokenError') {
+      return res.status(401).json({ error: { message: 'Invalid token' } });
+    }
+    console.error(err);
+    res.status(500).json({ error: { message: 'Server error' } });
+  }
+};
+
+
 module.exports = {
-    getUsers, User_signup, User_login, User_Delete, User_signup_nameAndPhoto , User_getImg, User_getUserName, User_ChangeUserName, User_ChangeUserImg, getNameFromEmail, getUserimgFromEmail
+    getUsers, User_signup, User_login, User_Delete, User_signup_nameAndPhoto , User_getImg, User_getUserName, User_ChangeUserName, User_ChangeUserImg, getNameFromEmail, getUserimgFromEmail, User_getDriverState
 }

@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const userRoutes = require('./api/routes/user');
 const friendRoutes = require('./api/routes/friend')
+const driverRoutes = require('./api/routes/driver');
 const mongoose = require('mongoose');
 const io = require('socket.io');
 
@@ -12,7 +13,7 @@ require('dotenv').config()
 
 
 mongoose.connect(
-    `mongodb://192.168.31.119:27017/mongotest`
+    `mongodb://172.29.224.1:27017/mongotest`
 );
 app.use(fileUpload());
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 
 app.use('/friend', friendRoutes);
 app.use('/user', userRoutes);
+app.use('/driver' , driverRoutes);
 //app.use('/socket.io', ioRouter);
 
 // 中介軟體設置
