@@ -7,6 +7,7 @@ const WebCrypto = require('../help/WebCrypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { error } = require('console');
+const { users, FriendsReq,Friends } = require('../models/postgreSQL/Friend'); 
 const UserGPS = require('../models/userGPS');
 
 const getUsers = (req, res) => {
@@ -397,6 +398,7 @@ const User_getDriverState = async  (req , res , next) => {
   if (!authHeader) {
     return res.status(401).json({ error: { message: 'Authorization header missing' } });
   }
+
   const token = authHeader.split(' ')[1]; // 取得 Bearer token  
   try {
     // 将 token 解析成 payload
@@ -404,24 +406,25 @@ const User_getDriverState = async  (req , res , next) => {
     // 取得 payload 中的 id
     const userId = decoded.id;
     // 查询用户头像的文件路径
+    const GetDriverState = await users.findOne({
+      where: {id: userId},
+      attributes: ['driverState']
+    })
 
-    pool.query(queries.getDriverState, [userId] , (error , results) => {
-      if (error) {
-        return res.status(404).json({ error: { message: 'User not found' } });
-      }
-      else{
-        const driverState = results.rows[0].driverState;
-        res.status(200).json({
-          driverState
-        });
-      }
+    const driverState = GetDriverState.driverState
+    console.log(driverState);
+    res.status(200).json({
+      driverState // 返回包括所需字段的数组
     });
 
+
+    
+
   } catch (err) {
-    if (err.driverState === 'TokenExpiredError') {
+    if (err.name === 'TokenExpiredError') {
       return res.status(401).json({ error: { message: 'Token expired' } });
     }
-    if (err.driverState === 'JsonWebTokenError') {
+    if (err.name === 'JsonWebTokenError') {
       return res.status(401).json({ error: { message: 'Invalid token' } });
     }
     console.error(err);

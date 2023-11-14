@@ -3,7 +3,7 @@ const { users, FriendsReq,Friends } = require('./Friend');
 
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
 const sequelize = new Sequelize('postgres', 'postgres', `${process.env.PG_PW}`, {
-  host: '172.29.224.1',
+  host: '192.168.31.119',
   dialect: 'postgres',
   port: 5432,
 });

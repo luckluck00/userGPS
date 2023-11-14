@@ -41,7 +41,7 @@ const sendDriverRequest = async (req, res) => {
     });
     if(updateUserDriverState){
       await updateUserDriverState.update({
-        driveState: true,
+        driverState: true,
       })
     }
 
@@ -150,6 +150,16 @@ const checkReq = async (req, res) => {
       await updateDriverReq.update({
         accepted: true,
       });
+      const updateUserDriverState = await users.findOne({
+        where: {
+          email: userEmail,
+        },
+      });
+      if(updateUserDriverState){
+        await updateUserDriverState.update({
+          driverState: true,
+        })
+      }
 
       const CreateUber = await Uber.create({
         userEmail: userEmail,
@@ -157,7 +167,7 @@ const checkReq = async (req, res) => {
       });
 
       res.status(200).json({
-        message: 'Friend created successfully',
+        message: 'Driver created successfully',
       });
 
       console.log(CreateUber, updateDriverReq);
@@ -207,7 +217,78 @@ const checkReq = async (req, res) => {
     }
   }
   
+  const getUber = async (req , res) => {
+    try {
+      const authHeader = req.headers.authorization;
+          if (!authHeader) {
+            return res.status(401).json({ error: { message: 'Authorization header missing' } });
+          }
+      const token = authHeader.split(' ')[1]; // 取得 Bearer token  
+      // 将 token 解析成 payload
+      const decoded = jwt.verify(token, process.env.JWT_KEY);
+      // 取得 payload 中的 id
+      const userEmail = decoded.email;
+      const getUber = await Uber.findOne({
+        where: {userEmail: userEmail}
+      })
+      if(getUber){
+        const getDriver = await Uber.findOne({
+          where: {userEmail: userEmail},
+          include: {
+            model: users,
+            as: 'driverEmailUser',
+            attributes: ['img_path', 'name', 'email']
+           }
+        })
+          const imgPath = getDriver.driverEmailUser.img_path;
+          const filePath = path.join(__dirname, imgPath);
+          const fileContent = await fs.promises.readFile(filePath);
 
+        //取得姓名
+        const driverName = getDriver.driverEmailUser.name;
+  
+        //取得好友Email
+        const driverEmail = getDriver.driverEmailUser.email;
+
+        res.status(200).json({
+          message: 'Driver sent successfully',
+          userName: driverName,
+          userImage: fileContent,
+          userEmail: driverEmail,
+        });
+      } else {
+        const getUser = await Uber.findOne({
+          where: {driverEmail: userEmail},
+          include: {
+            model: users,
+            as: 'userEmailUser',
+            attributes: ['img_path', 'name', 'email']
+           }
+        })
+        const imgPath = getUser.userEmailUser.img_path;
+        const filePath = path.join(__dirname, imgPath);
+        const fileContent = await fs.promises.readFile(filePath);
+
+      //取得姓名
+      const driverName = getUser.userEmailUser.name;
+
+      //取得好友Email
+      const driverEmail = getUser.userEmailUser.email;
+      console.log(driverName, driverEmail, fileContent);
+      res.status(200).json({
+        message: 'Driver sent successfully',
+        userName: driverName,
+        userImage: fileContent,
+        userEmail: driverEmail,
+      });
+    }
+    } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: { message: 'Server error' } });
+    }
+  }
+
+  
 module.exports = {
-  sendDriverRequest, getDriversReq, checkReq, denyUber
+  sendDriverRequest, getDriversReq, checkReq, denyUber, getUber
 };

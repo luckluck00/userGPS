@@ -13,7 +13,7 @@ require('dotenv').config()
 
 
 mongoose.connect(
-    `mongodb://172.29.224.1:27017/mongotest`
+    `mongodb+srv://luck04280428:`+process.env.MONGO_ATLAS_PW+`@cluster0.thiqewb.mongodb.net/?retryWrites=true&w=majority`
 );
 app.use(fileUpload());
 

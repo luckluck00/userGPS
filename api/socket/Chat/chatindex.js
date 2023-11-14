@@ -67,6 +67,7 @@ class MessagesSocketHead{
             time: savedMessage.time,
             friendEmail: savedMessage.friendEmail,
         };
+        console.log(formattedMessage);
         
         return { data: formattedMessage };
     } catch (err) {
