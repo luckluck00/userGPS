@@ -147,9 +147,9 @@ const checkReq = async (req, res) => {
     });
 
     if (updateDriverReq) {
-      await updateDriverReq.update({
-        accepted: true,
-      });
+      await updateDriverReq.destroy().then(() => {
+        console.log('destroy done!')
+      })
       const updateUserDriverState = await users.findOne({
         where: {
           email: userEmail,
@@ -181,7 +181,49 @@ const checkReq = async (req, res) => {
     res.status(500).json({ error: { message: 'Server error' } });
   }
 };
+const denyReq = async (req , res) => {
+  try {
+    const authHeader = req.headers.authorization;
+          if (!authHeader) {
+            return res.status(401).json({ error: { message: 'Authorization header missing' } });
+          }
+      const token = authHeader.split(' ')[1]; // 取得 Bearer token  
+      // 将 token 解析成 payload
+      const decoded = jwt.verify(token, process.env.JWT_KEY);
+      // 取得 payload 中的 id
+      const userEmail = decoded.email;
+      const deleteDriverReq = await DriverRequestModel.findOne({
+        where: {
+          DriverEmail: userEmail
+        }
+      });
+      if (deleteDriverReq) {
+        await deleteDriverReq.destroy().then(() => {
+          console.log('destroy done!')
+        })
+      }
+      const updateUserDriverState = await users.findOne({
+        where: {
+          email: userEmail,
+        },
+      });
+      if(updateUserDriverState){
+        await updateUserDriverState.update({
+          driverState: false,
+        })
+        console.log('driverState update!')
+      }
 
+      res.status(200).json({
+        message: 'driverReq deny successfully',
+      })
+
+      
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: { message: 'Server error' } });
+  }
+}
   
   const denyUber = async (req , res) => {
     try {
@@ -206,6 +248,36 @@ const checkReq = async (req, res) => {
             console.log('destroy done!')
           })
         }
+        const updateUserDriverState = await users.findOne({
+          where: {
+            email: userEmail,
+          },
+        });
+        if(updateUserDriverState){
+          await updateUserDriverState.update({
+            driverState: false,
+          })
+          console.log('driverState update!')
+        }
+        const updateUserDriverState2 = await users.findOne({
+          where: {
+            email: driverEmail,
+          },
+        });
+        if(updateUserDriverState2){
+          await updateUserDriverState.update({
+            driverState: false,
+          })
+          console.log('driverState update!')
+        }
+        await Message.deleteMany({
+          $or: [
+            { $and: [{ email: userEmail }, { friendEmail: driverEmail }] },
+            { $and: [{ email: driverEmail }, { friendEmail: userEmail }] }
+          ]
+        });
+  
+        console.log('UberMessage deny successfully');
         res.status(200).json({
           message: 'Uber deny successfully',
         })
@@ -290,5 +362,5 @@ const checkReq = async (req, res) => {
 
   
 module.exports = {
-  sendDriverRequest, getDriversReq, checkReq, denyUber, getUber
+  sendDriverRequest, getDriversReq, checkReq, denyReq, denyUber, getUber
 };

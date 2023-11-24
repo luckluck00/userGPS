@@ -150,6 +150,17 @@ try {
         accepted: true
       });
     }
+    const deleteFriendsReq = await FriendsReq.findOne({
+      where: {
+        participants: friendId,
+        requestTo: userEmail
+      }
+    });
+    if (deleteFriendsReq) {
+      await deleteFriendsReq.destroy().then(() => {
+        console.log('destroy done!')
+      })
+    }
     //console.log(friendEmail);
     const createFriends = await Friends.create({
       userId: tokenUserId,
@@ -375,6 +386,55 @@ const getFriendAndMsg = async (req , res) => {
         res.status(500).json({ error: { message: 'Server error' } });
   }
 }
+
+const denyFriend = async (req , res) => {
+  try {
+    const authHeader = req.headers.authorization;
+          if (!authHeader) {
+            return res.status(401).json({ error: { message: 'Authorization header missing' } });
+          }
+      const token = authHeader.split(' ')[1]; // 取得 Bearer token  
+      // 将 token 解析成 payload
+      const decoded = jwt.verify(token, process.env.JWT_KEY);
+      // 取得 payload 中的 id
+      const userId = decoded.id;
+      const userEmail = decoded.email;
+      friendEmail = req.body.friendEmail;
+
+      const deleteFriend = await Friends.findOne({
+        where: {
+          userId: userId,
+          friends: friendEmail
+        }
+      });
+
+      if (deleteFriend) {
+        await deleteFriend.destroy();
+        console.log('destroy done!');
+      }
+
+      await Message.deleteMany({
+        $or: [
+          { $and: [{ email: userEmail }, { friendEmail: friendEmail }] },
+          { $and: [{ email: friendEmail }, { friendEmail: userEmail }] }
+        ]
+      });
+
+      console.log('FriendMessage deny successfully');
+
+
+
+      
+      res.status(200).json({
+        message: 'Friend deny successfully',
+      })
+
+      
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: { message: 'Server error' } });
+  }
+}
 module.exports = {
-    sendFriendReuqest,getFriendsReq,checkReq, denyReq, getFriend, getFriendAndMsg
+    sendFriendReuqest,getFriendsReq,checkReq, denyReq, getFriend, getFriendAndMsg,denyFriend
 }
