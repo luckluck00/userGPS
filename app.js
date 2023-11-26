@@ -13,7 +13,7 @@ require('dotenv').config()
 
 
 mongoose.connect(
-    `mongodb+srv://luck04280428:`+process.env.MONGO_ATLAS_PW+`@cluster0.thiqewb.mongodb.net/?retryWrites=true&w=majority`
+    `mongodb+srv://user:`+process.env.AZURE_MONGODB_PW+`@mongodb-zenly.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000`
 );
 app.use(fileUpload());
 
