@@ -13,7 +13,7 @@ require('dotenv').config()
 
 
 mongoose.connect(
-    `mongodb+srv://user:`+process.env.AZURE_MONGODB_PW+`@mongodb-zenly.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000`
+    `mongodb+srv://user:${process.env.AZURE_MONGODB_PW}@mongodb-zenly.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000`
 );
 app.use(fileUpload());
 
