@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const fs = require('fs');
-const config = require('../../../config')
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
 const sequelize = new Sequelize({
   dialect: 'postgres',       // 指定使用 PostgreSQL

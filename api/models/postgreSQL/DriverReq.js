@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const { users, FriendsReq,Friends } = require('./Friend'); 
-const config = require('../../../config')
 
 const fs = require('fs')
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
