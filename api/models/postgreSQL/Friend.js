@@ -1,10 +1,19 @@
 const Sequelize = require('sequelize');
-
+const fs = require('fs');
+const config = require('../../../config')
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
-const sequelize = new Sequelize('postgres', 'postgres', `${process.env.PG_PW}`, {
-  host: '192.168.31.119',
-  dialect: 'postgres',
+const sequelize = new Sequelize({
+  dialect: 'postgres',       // 指定使用 PostgreSQL
+  host: 'gps-user-data.postgres.database.azure.com', // 填入你的主機地址
   port: 5432,
+  username: 'gps',            // 填入你的用戶名
+  password: config.database.password, // 填入你的密碼
+  database: 'postgres',               // 填入你的數據庫名稱
+  dialectOptions: {
+    ssl: {
+      ca: fs.readFileSync('./DigiCertGlobalRootCA.crt.pem'),  // 這裡可能需要根據你的 PostgreSQL 設定進行調整
+    },
+  },
 });
 
 // 定義 User 模型
