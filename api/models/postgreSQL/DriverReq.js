@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
   host: 'gps-user-data.postgres.database.azure.com', // 填入你的主機地址
   port: 5432,
   username: 'gps',            // 填入你的用戶名
-  password: config.database.password, // 填入你的密碼
+  password: '*Usertest', // 填入你的密碼
   database: 'postgres',               // 填入你的數據庫名稱
   dialectOptions: {
     ssl: {
