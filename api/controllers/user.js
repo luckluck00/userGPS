@@ -11,7 +11,7 @@ const { users, FriendsReq,Friends } = require('../models/postgreSQL/Friend');
 const UserGPS = require('../models/userGPS');
 
 const getUsers = (req, res) => {
-    pool.query(queries.getUsers, (error, results) => {
+  pool.query(queries.getUsers, (error, results) => {
         if (error) {
             console.log(error);
             res.status(404).send("伺服器錯誤");
@@ -24,39 +24,40 @@ const getUsers = (req, res) => {
 
 
 const User_signup = async (req, res, next) => {
-    const {email , phonenumber ,password ,dob} = req.body;
+  const { email, phonenumber, password, dob } = req.body;
 
-    //check if email exists
-    pool.query (queries.checkEmailExists, [email] , (error, results) => {
-      if(results.rows.length) {
-        res.status(404).send("Email already exists.")
-      }else{
-        //add student to db
-        bcrypt.hash(password, 10, (err, hash) => {
-          if (err) {
-            console.log(err);
-            res.status(500).send('伺服器錯誤');
-          } else {
-            //add student to db
-            pool.query(queries.CreatUser, [email, phonenumber, hash, dob], async (error, results) => {
-              try {
-                console.log(results);
-                const userId = results.rows[0].id;
-                const token = jwt.sign({id: userId, email: email}, process.env.JWT_KEY);
-                  const userGPS = new UserGPS({latitude: 0, longitude: 0,userId: userId});
-                  const doc = await userGPS.save();
-                  console.log(doc);
-                  res.status(201).json({ message: "User Created Successfully!", token, userId });
-                } catch (err) {
-                  console.log(err);
-                  res.status(404).send("伺服器錯誤");
-              }
-            });
-          }
-        });
+  try {
+      // Check if email exists
+      const emailCheckResult = await pool.query(queries.checkEmailExists, [email]);
+      if (emailCheckResult.rows.length) {
+          return res.status(404).json({ message: "email存在" });
       }
-    });
+
+      // Hash password
+      const hash = await bcrypt.hash(password, 10);
+
+      // Add user to db
+      const createUserResult = await pool.query(queries.CreatUser, [email, phonenumber, hash, dob]);
+
+      // Retrieve userId from the result
+      const userId = createUserResult.rows[0].id;
+
+      // Generate JWT token
+      const token = jwt.sign({ id: userId, email: email }, process.env.JWT_KEY);
+
+      // Create and save UserGPS record
+      const userGPS = new UserGPS({ latitude: 0, longitude: 0, userId: userId });
+      const userGPSResult = await userGPS.save();
+
+      console.log(userGPSResult);
+
+      res.status(201).json({ message: "User Created Successfully!", token, userId });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "伺服器錯誤" });
+  }
 };
+
 
 const User_signup_nameAndPhoto = async (req , res , next) => {
   const { name } = req.body;
@@ -408,10 +409,10 @@ const User_getDriverState = async  (req , res , next) => {
     // 查询用户头像的文件路径
     const GetDriverState = await users.findOne({
       where: {id: userId},
-      attributes: ['driverState']
+      attributes: ['driverstate']
     })
 
-    const driverState = GetDriverState.driverState
+    const driverState = GetDriverState.driverstate
     console.log(driverState);
     res.status(200).json({
       driverState // 返回包括所需字段的数组

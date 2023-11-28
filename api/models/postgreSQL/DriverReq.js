@@ -16,6 +16,12 @@ const sequelize = new Sequelize({
       ca: fs.readFileSync('./DigiCertGlobalRootCA.crt.pem'),  // 這裡可能需要根據你的 PostgreSQL 設定進行調整
     },
   },
+  pool: {
+    max: 5, // 最大连接数
+    min: 0, // 最小连接数
+    acquire: 30000, // 获得连接的最大等待时间（毫秒）
+    idle: 10000, // 连接池在释放连接之前将保持空闲的时间（毫秒）
+  },
 });
 
 // 定義 DriverReq 模型

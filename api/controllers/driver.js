@@ -41,7 +41,7 @@ const sendDriverRequest = async (req, res) => {
     });
     if(updateUserDriverState){
       await updateUserDriverState.update({
-        driverState: true,
+        driverstate: true,
       })
     }
 
@@ -157,7 +157,7 @@ const checkReq = async (req, res) => {
       });
       if(updateUserDriverState){
         await updateUserDriverState.update({
-          driverState: true,
+          driverstate: true,
         })
       }
 
@@ -209,7 +209,7 @@ const denyReq = async (req , res) => {
       });
       if(updateUserDriverState){
         await updateUserDriverState.update({
-          driverState: false,
+          driverstate: false,
         })
         console.log('driverState update!')
       }
@@ -255,7 +255,7 @@ const denyReq = async (req , res) => {
         });
         if(updateUserDriverState){
           await updateUserDriverState.update({
-            driverState: false,
+            driverstate: false,
           })
           console.log('driverState update!')
         }
@@ -265,8 +265,8 @@ const denyReq = async (req , res) => {
           },
         });
         if(updateUserDriverState2){
-          await updateUserDriverState.update({
-            driverState: false,
+          await updateUserDriverState2.update({
+            driverstate: false,
           })
           console.log('driverState update!')
         }
