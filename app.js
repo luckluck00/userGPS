@@ -16,7 +16,7 @@ console.log(encodeURIComponent(process.env.AZURE_MONGODB_PW));
 console.log(encodeURIComponent(process.env.AZURE_PG_PW));
 
 mongoose.connect(
-    `mongodb+srv://user:*Mongotest@mongodb-zenly.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000`,
+    `mongodb+srv://user:${encodedPassword}@mongodb-zenly.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000`,
 );
 app.use(fileUpload());
 

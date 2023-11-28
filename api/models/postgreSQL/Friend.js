@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+require('dotenv').config()
 const fs = require('fs');
 // 建立 Sequelize 實例，連接到 PostgreSQL 資料庫
 const sequelize = new Sequelize({
@@ -6,7 +7,7 @@ const sequelize = new Sequelize({
   host: 'gps-user-data.postgres.database.azure.com', // 填入你的主機地址
   port: 5432,
   username: 'gps',            // 填入你的用戶名
-  password: '*Usertest', // 填入你的密碼
+  password: process.env.AZURE_PG_PW, // 填入你的密碼
   database: 'postgres',               // 填入你的數據庫名稱
   dialectOptions: {
     ssl: {
