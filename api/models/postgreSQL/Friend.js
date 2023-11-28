@@ -95,8 +95,8 @@ Friends.belongsTo(users, {foreignKey: 'friends', targetKey: 'email', as: 'friend
 
 
 // 同步資料庫，創建或更新表格
-FriendsReq.sync({ force: true });
-Friends.sync({ force: true });
+FriendsReq.sync({ force: false });
+Friends.sync({ force: false });
 
 // 導出 Friends 模型
 module.exports = {users,FriendsReq, Friends};
