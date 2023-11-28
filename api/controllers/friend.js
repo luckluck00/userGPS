@@ -400,7 +400,8 @@ const denyFriend = async (req , res) => {
       const userId = decoded.id;
       const userEmail = decoded.email;
       friendEmail = req.body.friendEmail;
-
+      const friend = await users.findOne({ where: { email:friendEmail } });
+      const friendId = await friend.id;
       const deleteFriend = await Friends.findOne({
         where: {
           userId: userId,
@@ -410,6 +411,17 @@ const denyFriend = async (req , res) => {
 
       if (deleteFriend) {
         await deleteFriend.destroy();
+        console.log('destroy done!');
+      }
+      const deleteFriend2 = await Friends.findOne({
+        where: {
+          userId: friendId,
+          friends: userEmail
+        }
+      });
+
+      if (deleteFriend2) {
+        await deleteFriend2.destroy();
         console.log('destroy done!');
       }
 
