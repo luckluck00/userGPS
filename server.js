@@ -4,9 +4,15 @@ const io = require('socket.io');
 const { getUserGPS } = require("./api/socket/GPS/GPSsocket");
 const { Message } = require('./api/socket/Chat/chatSocket');
 const { Drive } = require('./api/socket/Drive/driveSocket');
-
+/*server.js*/
+const { useAzureSocketIO } = require("@azure/web-pubsub-socket.io");
+const wpsOptions = {
+  hub: "sockettest",
+  connectionString: 'Endpoint=https://sockettest.webpubsub.azure.com;AccessKey=3FenLkSGYnCicg+bg59tXuaHqOxlgSobGt1vb3f3YEw=;Version=1.0;'
+}
 const server = http.createServer(app, () => {});
 const socketServer = io(server);
+useAzureSocketIO(socketServer, wpsOptions);
 
 socketServer.on('connection', (socket) => {
   console.log('Socket connected:', socket.id);
