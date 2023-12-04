@@ -43,7 +43,6 @@ const Message = (io) => {
       const recipientEmail = data.friendEmail;
       const message = await chatSocketHander.sendMessage(data, socket.id);
       socket.emit('MessageSaved', { message: 'Message data saved to MongoDB!' });
-  
       // Emit the message to the recipient's room
       socket.to(recipientEmail).emit('privateMessage', { sender: senderEmail, message: message });
     });
