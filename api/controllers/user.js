@@ -299,7 +299,7 @@ const User_ChangeUserImg = async  (req , res , next) => {
     .resize({ width: 150, height: 150, fit: 'inside' })
     .toBuffer();*/
     const imagePath = path.join(__dirname, 'uploads', filename);
-    //fs.writeFileSync(imagePath, imageBuffer);
+    fs.writeFileSync(imagePath, image);
     const imgPath = `uploads/${filename}`;
   // 寫入縮小且裁剪成圓形的圖片檔案
   // 寫入縮小且裁剪成圓形的圖片檔案
