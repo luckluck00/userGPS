@@ -9,7 +9,7 @@ router.post('/signup', UsersController.User_signup);
 router.post('/signup/nameAndphoto', UsersController.User_signup_nameAndPhoto);
 router.post('/login', UsersController.User_login);
 router.get('/getImg', UsersController.User_getImg);
-router.delete('/:id', checkAuth ,UsersController.User_Delete);
+router.delete('/:id',  UsersController.User_Delete);
 router.get('/getUserName' , UsersController.User_getUserName);
 router.post('/changeUserName' , UsersController.User_ChangeUserName);
 router.post('/changeUserImg' , UsersController.User_ChangeUserImg);

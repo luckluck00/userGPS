@@ -247,6 +247,16 @@ const denyReq = async (req , res) => {
           await deleteUber.destroy().then(() => {
             console.log('destroy done!')
           })
+        }const deleteUber2 = await Uber.findOne({
+          where: {
+            userEmail: driverEmail,
+            driverEmail: userEmail
+          }
+        });
+        if (deleteUber2) {
+          await deleteUber2.destroy().then(() => {
+            console.log('destroy done!')
+          })
         }
         const updateUserDriverState = await users.findOne({
           where: {
