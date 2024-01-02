@@ -14,7 +14,17 @@ const server = http.createServer(app, () => {});
 const socketServer = io(server);
 useAzureSocketIO(socketServer, wpsOptions);
 
+
+
 socketServer.on('connection', (socket) => {
+
+  socket.on('logout', () => {
+    // 进行用户登出逻辑，可能包括关闭数据库连接、清除用户数据等
+
+    // 关闭与用户相关的 Socket.IO 连接
+    socket.disconnect();
+    console.log(`Socket disconnected: ${socket.id}`);
+  });
   console.log('Socket connected:', socket.id);
   getUserGPS(io)(socket); // 呼叫 getUserGPS 函式並將 socket 和 io 作為參數傳遞
   Message(io)(socket);
